@@ -63,10 +63,10 @@ fn main() {
             let vol = Value::new(&mut frame, inputs.vol);
             let div = Value::new(&mut frame, inputs.div);
 
-            let option = call_julia(&mut frame, &inputs.option_type, &[strike, expiry]).unwrap();
-            let engine = call_julia(&mut frame, "Binomial", &[binomial]).unwrap();
-            let data = call_julia(&mut frame, "MarketData", &[spot, rate, vol, div]).unwrap();
-            let result = call_julia(&mut frame, "price", &[option, engine, data]).unwrap();
+            let option = call_motoro(&mut frame, &inputs.option_type, &[strike, expiry]).unwrap();
+            let engine = call_motoro(&mut frame, "Binomial", &[binomial]).unwrap();
+            let data = call_motoro(&mut frame, "MarketData", &[spot, rate, vol, div]).unwrap();
+            let result = call_motoro(&mut frame, "price", &[option, engine, data]).unwrap();
 
             let price = result.unbox::<f64>().expect("price did not return Float64");
 
@@ -74,13 +74,9 @@ fn main() {
         }),
         Commands::Example => dialog::example_thing(),
     }
-
-    // println!("two: {:?}", args.two);
-    // println!("one: {:?}", args.one);
 }
 
-// I am proud of this
-fn call_julia<'target, Tgt, N>(
+fn call_motoro<'target, Tgt, N>(
     target: Tgt,
     name: N,
     args: &[Value<'_, 'static>],

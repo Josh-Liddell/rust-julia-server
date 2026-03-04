@@ -12,7 +12,7 @@ pub struct UserInputs {
 }
 
 pub fn get_option_inputs() -> UserInputs {
-    let selections = &["EurpoeanCall", "EurpoeanPut"];
+    let selections = &["EuropeanCall", "EurpoeanPut"];
     let selection = Select::with_theme(&ColorfulTheme::default())
         .with_prompt("Pick an option")
         .default(0)
@@ -32,13 +32,7 @@ pub fn get_option_inputs() -> UserInputs {
     let div = float_input("Enter div");
 
     UserInputs {
-        option_type: {
-            match selection {
-                0 => String::from("EuropeanCall"),
-                1 => String::from("EuropeanPut"),
-                _ => String::from(""),
-            }
-        },
+        option_type: selections[selection].to_string(),
         strike,
         expiry,
         binomial,
