@@ -1,5 +1,6 @@
 // there are a number of ways you can structure the data, I found this most intutitve to understand later on
 #![allow(dead_code)]
+use std::str::FromStr;
 
 pub struct OptionContract {
     pub strike: f64,
@@ -10,6 +11,22 @@ pub struct OptionContract {
 pub enum OptionType {
     Call,
     Put,
+}
+
+// allows use to use .parse() to get an option type from their selection
+#[derive(Debug, PartialEq, Eq)]
+pub struct ParseOptionError;
+
+impl FromStr for OptionType {
+    type Err = ParseOptionError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "EuropeanCall" => Ok(OptionType::Call),
+            "EurpoeanPut" => Ok(OptionType::Put),
+            _ => Err(ParseOptionError),
+        }
+    }
 }
 
 pub struct EuropeanOption {

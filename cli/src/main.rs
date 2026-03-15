@@ -3,7 +3,7 @@ mod price;
 
 use clap::{Parser, Subcommand};
 use reqwest::Client;
-use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -35,12 +35,15 @@ async fn main() {
         Commands::RustPrice => dialog::price_option_rust(),
         Commands::JuliaAdd { a, b } => {
             let client = Client::new();
+            let mut map = HashMap::new();
+            map.insert("a", a);
+            map.insert("b", b);
 
-            let task = AdditionTask { a, b };
+            // let task = AdditionTask { a, b };
 
             let response = client
                 .post("http://localhost:8080/post_test")
-                .json(&task) // serializes to JSON
+                .json(&map) // serializes to JSON
                 .send()
                 .await
                 .expect("request failed");
@@ -53,8 +56,8 @@ async fn main() {
 }
 
 // figure out how to use the one defined in the other crate....
-#[derive(Serialize, Deserialize, Debug)]
-struct AdditionTask {
-    a: f64,
-    b: f64,
-}
+// #[derive(Serialize, Deserialize, Debug)]
+// struct AdditionTask {
+//     a: f64,
+//     b: f64,
+// }

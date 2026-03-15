@@ -1,12 +1,12 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use crate::price::{Binomial, EuropeanOption, MarketData, OptionContract, OptionType, Priceable};
+use crate::price::{Binomial, EuropeanOption, MarketData, OptionContract, Priceable};
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 
 pub fn price_option_rust() {
     let selections = &["EuropeanCall", "EurpoeanPut"];
-    let _selection = Select::with_theme(&ColorfulTheme::default()) // fix this later now we are assuming call, make it so we can parse see below
+    let selection = Select::with_theme(&ColorfulTheme::default()) // fix this later now we are assuming call, make it so we can parse see below
         .with_prompt("Pick an option")
         .default(0)
         .items(&selections[..])
@@ -30,7 +30,7 @@ pub fn price_option_rust() {
         contract: OptionContract {
             strike,
             expiry,
-            option_type: OptionType::Call,
+            option_type: selections[selection].parse().unwrap(),
         },
     };
 

@@ -3,19 +3,20 @@ mod tasks;
 
 use actix_web::{App, HttpServer, web};
 use jlrs::prelude::*;
+use log::info;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    println!("Starting julia runtime...");
+    pretty_env_logger::init();
+
     let (async_handle, _thread_handle) = Builder::new()
         .n_threads(4)
         .async_runtime(Tokio::<3>::new(false))
         .spawn()
         .expect("cannot init Julia");
+    info!("julia runtime startup initiated");
 
     let handle = web::Data::new(async_handle);
-
-    println!("Running server on port 8080...");
     HttpServer::new(move || {
         App::new()
             .app_data(handle.clone())
@@ -25,7 +26,4 @@ async fn main() -> std::io::Result<()> {
     .bind(("127.0.0.1", 8080))?
     .run()
     .await
-
-    // thread_handle.join().expect("runtime thread panicked"); // ???
-    // idk figure out the shutting down of it !!!!!!!!!!
 }
