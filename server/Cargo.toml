@@ -5,10 +5,9 @@ edition = "2024"
 
 [dependencies]
 actix-web = "4.13.0"
-# ctrlc = "3.5.2"
 jlrs = {version = "0.22.1", features = ["async-rt", "tokio-rt"]}
 log = "0.4.29"
 pretty_env_logger = "0.5.0"
 serde = { version = "1.0.228", features = ["derive"] }
-# tokio = { version = "1.50.0", features = ["full"] }
-# common = { path = "../common" }
+parking_lot = "0.12"
+actix-web-lab = "0.24"

@@ -2,15 +2,7 @@
 name = "julia_app"
 version = "0.1.0"
 edition = "2024"
-description = "A Rust application that uses Julia"
-
-[features]
-
-# [profile.dev]
-# panic = "abort"
-
-# [profile.release]
-# panic = "abort"
+description = "CLI for the rust-julia server"
 
 [dependencies]
 clap = { version = "4.5.60", features = ["derive"] }

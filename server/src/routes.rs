@@ -1,5 +1,7 @@
+use crate::stop_handle::StopHandle;
 use crate::tasks::AdditionTask;
 use actix_web::{HttpResponse, Responder, get, post, web};
+use actix_web_lab::extract::Path;
 use jlrs::runtime::handle::async_handle::AsyncHandle;
 use log::info;
 
@@ -33,8 +35,14 @@ async fn test2(
 
     let res = recv.await.expect("cannot receive result");
 
-    // println!("A request was hanldled");
     HttpResponse::Ok().body(format!("{res}"))
+}
+
+#[post("/stop/{graceful}")]
+async fn stop(Path(graceful): Path<bool>, stop_handle: web::Data<StopHandle>) -> HttpResponse {
+    info!("Shutting down...");
+    stop_handle.stop(graceful);
+    HttpResponse::NoContent().finish()
 }
 
 // EXAMPLE

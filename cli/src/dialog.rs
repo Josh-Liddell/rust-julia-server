@@ -6,7 +6,7 @@ use dialoguer::{Input, Select, theme::ColorfulTheme};
 
 pub fn price_option_rust() {
     let selections = &["EuropeanCall", "EurpoeanPut"];
-    let selection = Select::with_theme(&ColorfulTheme::default()) // fix this later now we are assuming call, make it so we can parse see below
+    let selection = Select::with_theme(&ColorfulTheme::default())
         .with_prompt("Pick an option")
         .default(0)
         .items(&selections[..])
@@ -24,7 +24,6 @@ pub fn price_option_rust() {
     let vol: f64 = dialog_input("Enter vol");
     let div: f64 = dialog_input("Enter div");
 
-    // option_type: selections[selection].parse() // impl the thing so that this works
     // right now ITS ONLY doing european option
     let option = EuropeanOption {
         contract: OptionContract {

@@ -16,8 +16,13 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    #[command(about = "Example of dialoguer crate feature")]
     Example,
+    #[command(about = "Price a european option in rust")]
     RustPrice,
+    #[command(about = "Stop the running server")]
+    Stop,
+    #[command(about = "Add two numbers using the Julia server")]
     JuliaAdd {
         #[arg(short)]
         a: f64,
@@ -29,17 +34,24 @@ enum Commands {
 #[tokio::main]
 async fn main() {
     let args = Cli::parse();
+    let client = Client::new();
+
+    // check conneciton to server before proceeding
 
     match args.command {
         Commands::Example => dialog::example_dialog(),
         Commands::RustPrice => dialog::price_option_rust(),
+        Commands::Stop => {
+            client
+                .post("http://localhost:8080/stop/true")
+                .send()
+                .await
+                .expect("request failed");
+        }
         Commands::JuliaAdd { a, b } => {
-            let client = Client::new();
             let mut map = HashMap::new();
             map.insert("a", a);
             map.insert("b", b);
-
-            // let task = AdditionTask { a, b };
 
             let response = client
                 .post("http://localhost:8080/post_test")
@@ -54,10 +66,3 @@ async fn main() {
         }
     }
 }
-
-// figure out how to use the one defined in the other crate....
-// #[derive(Serialize, Deserialize, Debug)]
-// struct AdditionTask {
-//     a: f64,
-//     b: f64,
-// }
