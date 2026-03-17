@@ -6,11 +6,19 @@ use actix_web::{App, HttpServer, middleware, web};
 use anyhow::Result;
 use jlrs::prelude::*;
 use log::info;
+use std::{env, path::PathBuf};
 use stop_handle::StopHandle;
 
 #[actix_web::main]
 async fn main() -> Result<()> {
     pretty_env_logger::init();
+
+    let path: PathBuf = env::var("JULIA_CODE_PATH")
+        .unwrap_or_else(|e| {
+            eprintln!("Error reading JULIA_CODE_PATH: {e}");
+            std::process::exit(1);
+        })
+        .into();
 
     info!("starting julia async runtime on a new thread");
     let (julia, thread_handle) = Builder::new()
@@ -22,8 +30,7 @@ async fn main() -> Result<()> {
     // dispatch the including task to the julia runtime
     unsafe {
         let recv = julia
-            // possible use env variable instead
-            .include("/Users/joshua/Motoro.jl/Motoro/src/Motoro.jl")?
+            .include(path)?
             .try_dispatch()
             .expect("runtime has shut down");
 
