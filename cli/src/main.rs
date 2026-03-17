@@ -29,19 +29,18 @@ enum Commands {
         #[arg(short)]
         b: f64,
     },
+    Number,
 }
 
 #[tokio::main]
 async fn main() {
     let args = Cli::parse();
-    let client = Client::new();
-
-    // check conneciton to server before proceeding
 
     match args.command {
         Commands::Example => dialog::example_dialog(),
         Commands::RustPrice => dialog::price_option_rust(),
         Commands::Stop => {
+            let client = Client::new();
             client
                 .post("http://localhost:8080/stop/true")
                 .send()
@@ -49,6 +48,7 @@ async fn main() {
                 .expect("request failed");
         }
         Commands::JuliaAdd { a, b } => {
+            let client = Client::new();
             let mut map = HashMap::new();
             map.insert("a", a);
             map.insert("b", b);
@@ -63,6 +63,16 @@ async fn main() {
             let result = response.text().await.expect("cannot read response");
 
             println!("Result: {result}");
+        }
+        Commands::Number => {
+            let body = reqwest::get("http://localhost:8080/number")
+                .await
+                .unwrap()
+                .text()
+                .await
+                .unwrap();
+
+            println!("number = {body}");
         }
     }
 }
