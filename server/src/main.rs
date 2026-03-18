@@ -2,7 +2,8 @@ mod routes;
 mod stop_handle;
 mod tasks;
 
-use actix_web::{App, HttpServer, middleware, web};
+use actix_files::Files;
+use actix_web::{App, HttpServer, middleware::Logger, web};
 use anyhow::Result;
 use jlrs::prelude::*;
 use log::info;
@@ -46,13 +47,17 @@ async fn main() -> Result<()> {
         let stop_handle = stop_handle.clone();
         move || {
             App::new()
-                .wrap(middleware::Logger::default())
+                .wrap(Logger::default())
                 .app_data(stop_handle.clone())
                 .app_data(handle.clone())
                 .service(routes::test)
                 .service(routes::test2)
                 .service(routes::number)
                 .service(routes::stop)
+                // static files
+                .service(Files::new("/images", "static/images/").show_files_listing())
+                .service(Files::new("/data", "static/data/").show_files_listing())
+                .service(Files::new("/", "./static/root/").index_file("index.html"))
         }
     })
     .bind(("127.0.0.1", 8080))?

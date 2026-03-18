@@ -1,0 +1,12 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    font-family: sans-serif;
+}
+
+img {
+    transition: 0.5s ease-in-out;
+    width: 300px;
+}
